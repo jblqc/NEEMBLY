@@ -14,8 +14,10 @@
     "core-js": "^3.8.3",
     "pinia": "^3.0.2",
     "roboto-fontface": "*",
+    "sass": "^1.87.0",
     "vue": "^3.2.13",
-    "vuetify": "npm:@vuetify/nightly@next",
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.3.10",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
@@ -28,7 +30,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "vite": "^3.0.8",
-    "vite-plugin-vuetify": "^1.0.0-alpha.12",
+    "vite-plugin-vuetify": "^1.0.2",
     "vue-cli-plugin-vuetify": "~2.5.8"
   },
   "eslintConfig": {
