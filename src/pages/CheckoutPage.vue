@@ -1,10 +1,22 @@
 <template>
+  
   <v-container>
     <v-breadcrumbs :items="breadcrumbs" class="px-0">
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
+ <v-alert
+      v-if="cartStore.cartItemCount === 0"
+      type="warning"
+      class="mb-6"
+    >
+      Your cart is empty! Please add items before checkout.
+      <v-btn color="warning" variant="text" to="/" class="ml-2">
+        Continue Shopping
+      </v-btn>
+    </v-alert>
+        <template v-else>
 
     <v-row>
       <v-col cols="12" md="8">
@@ -140,12 +152,12 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row></template>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,watch } from 'vue'
 import { useCartStore } from '@/stores/useCartStore'
 import { useRouter } from 'vue-router'
 
@@ -190,4 +202,10 @@ const placeOrder = async () => {
     isPlacingOrder.value = false
   }
 }
+watch(() => cartStore.cartItemCount, (count) => {
+  if (count === 0) {
+    router.push('/cart')
+  }
+}, { immediate: true })
+
 </script>

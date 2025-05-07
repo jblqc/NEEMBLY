@@ -31,7 +31,7 @@
       :content="cartStore.cartItemCount"
       :model-value="cartStore.cartItemCount > 0"
       color="red"
-      overlap
+      overlap class="mr-10"
     >
       <v-btn icon @click="navigateToCart">
         <v-icon>mdi-cart</v-icon>

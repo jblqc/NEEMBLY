@@ -127,19 +127,16 @@
           </v-alert>
 
           <v-row v-else>
-            <v-col
-              v-for="product in filteredProducts"
-              :key="product.id"
-              cols="12"
-              sm="6"
-              md="4"
-              lg="3"
-            >
-              <ProductCard
-                :product="product"
-                @added-to-cart="showSuccessAlert"
-              />
-            </v-col>
+          <v-col
+  v-for="product in filteredProducts"
+  :key="product.id"
+  cols="12"
+  sm="6"
+  md="4"
+  lg="3"
+>
+  <ProductCard :product="product" />
+</v-col>
           </v-row>
         </template>
       </v-col>

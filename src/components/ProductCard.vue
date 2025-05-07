@@ -36,7 +36,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import Swal from 'sweetalert2' 
+import { useCartStore } from '@/stores/useCartStore'
+import Swal from 'sweetalert2'
+
 const props = defineProps({
   product: {
     type: Object,
@@ -44,20 +46,9 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['added-to-cart'])
 const router = useRouter()
+const cartStore = useCartStore()
 const isAddingToCart = ref(false)
-
-const showSuccessAlert = (product) => {
-  Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: `${product.title} added to cart`,
-    showConfirmButton: false,
-    timer: 1500,
-    toast: true,
-  });
-}
 
 const navigateToProduct = () => {
   router.push({ name: 'product-detail', params: { id: props.product.id } })
@@ -65,16 +56,22 @@ const navigateToProduct = () => {
 
 const addToCart = (event) => {
   event.stopPropagation()
+  isAddingToCart.value = true
   try {
-    isAddingToCart.value = true
-    emit('added-to-cart', props.product)
-      showSuccessAlert(props.product) 
+    cartStore.addToCart(props.product)
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: `${props.product.title} added to cart`,
+      showConfirmButton: false,
+      timer: 1500,
+      toast: true,
+    })
   } finally {
     isAddingToCart.value = false
   }
 }
 </script>
-
 <style scoped>
 .product-card {
   height: 100%;

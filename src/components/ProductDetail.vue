@@ -149,7 +149,7 @@ const addToCart = async () => {
   try {
     isAddingToCart.value = true
     cartStore.addToCart(product.value)
-          showSuccessAlert(product.value) 
+    showSuccessAlert(product.value) 
 
   } finally {
     isAddingToCart.value = false
