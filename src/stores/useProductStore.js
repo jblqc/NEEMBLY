@@ -72,54 +72,13 @@ export const useProductStore = defineStore("products", {
         this.loading = false;
       }
     },
+    getProductById(productId) {
+      // Convert productId to number since route params are strings
+      const id = Number(productId);
+      return this.products.find((product) => product.id === id);
+    },
   },
   getters: {
-    filteredProducts() {
-      let filtered = [...this.products];
-
-      // Filter by search query
-      if (this.searchQuery) {
-        const query = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(
-          (product) =>
-            product.title.toLowerCase().includes(query) ||
-            product.description.toLowerCase().includes(query)
-        );
-      }
-
-      // Filter by category
-      if (this.selectedCategory) {
-        filtered = filtered.filter(
-          (product) => product.category === this.selectedCategory
-        );
-      }
-
-      // Filter by price range
-      if (this.minPrice) {
-        filtered = filtered.filter((product) => product.price >= this.minPrice);
-      }
-      if (this.maxPrice) {
-        filtered = filtered.filter((product) => product.price <= this.maxPrice);
-      }
-
-      // Sort products
-      switch (this.sortBy) {
-        case "price-low":
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case "price-high":
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        case "rating":
-          filtered.sort((a, b) => b.rating.rate - a.rating.rate);
-          break;
-        default:
-          // Keep original order
-          break;
-      }
-
-      return filtered;
-    },
     productCount() {
       return this.filteredProducts.length;
     },

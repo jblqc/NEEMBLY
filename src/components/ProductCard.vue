@@ -1,28 +1,31 @@
 <template>
   <v-card class="product-card" hover>
-    <v-img
-      :src="product.image"
-      :alt="product.title"
-      height="200px"
-      cover
-      class="product-image"
-    />
-    <v-card-item>
-      <v-card-title class="text-h6 text-wrap">{{ product.title }}</v-card-title>
-      <v-card-subtitle class="text-h6 font-weight-bold">
-        ${{ product.price.toFixed(2) }}
-        <v-chip v-if="product.rating" small class="ml-2">
-          {{ product.rating.rate }} ★
-        </v-chip>
-      </v-card-subtitle>
-    </v-card-item>
+    <div @click="navigateToProduct" class="clickable-area">
+      <v-img
+        :src="product.image"
+        :alt="product.title"
+        height="200px"
+        cover
+        class="product-image"
+      />
+      <v-card-item>
+        <v-card-title class="text-h6 text-wrap">{{ product.title }}</v-card-title>
+        <v-card-subtitle class="text-h6 font-weight-bold">
+          ${{ product.price.toFixed(2) }}
+          <v-chip v-if="product.rating" small class="ml-2">
+            {{ product.rating.rate }} ★
+          </v-chip>
+        </v-card-subtitle>
+      </v-card-item>
+    </div>
     <v-card-actions>
       <v-btn
         color="primary"
         variant="flat"
-        @click="addToCart"
+        @click.stop="addToCart"
         block
         :loading="isAddingToCart"
+
       >
         Add to Cart
       </v-btn>
@@ -32,8 +35,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useCartStore } from '@/stores/useCartStore'
-
+import { useRouter } from 'vue-router'
+import Swal from 'sweetalert2' 
 const props = defineProps({
   product: {
     type: Object,
@@ -41,13 +44,31 @@ const props = defineProps({
   }
 })
 
-const cartStore = useCartStore()
+const emit = defineEmits(['added-to-cart'])
+const router = useRouter()
 const isAddingToCart = ref(false)
 
-const addToCart = async () => {
+const showSuccessAlert = (product) => {
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: `${product.title} added to cart`,
+    showConfirmButton: false,
+    timer: 1500,
+    toast: true,
+  });
+}
+
+const navigateToProduct = () => {
+  router.push({ name: 'product-detail', params: { id: props.product.id } })
+}
+
+const addToCart = (event) => {
+  event.stopPropagation()
   try {
     isAddingToCart.value = true
-    cartStore.addToCart(props.product)
+    emit('added-to-cart', props.product)
+      showSuccessAlert(props.product) 
   } finally {
     isAddingToCart.value = false
   }
@@ -64,6 +85,11 @@ const addToCart = async () => {
 
 .product-card:hover {
   transform: translateY(-5px);
+}
+
+.clickable-area {
+  cursor: pointer;
+  flex-grow: 1;
 }
 
 .product-image {

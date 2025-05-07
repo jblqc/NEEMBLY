@@ -92,6 +92,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProductStore } from '@/stores/useProductStore'
 import { useCartStore } from '@/stores/useCartStore'
+import Swal from 'sweetalert2' 
 
 
 const route = useRoute()
@@ -112,6 +113,16 @@ const breadcrumbs = computed(() => {
   return items
 })
 
+const showSuccessAlert = (product) => {
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: `${product.title} added to cart`,
+    showConfirmButton: false,
+    timer: 1500,
+    toast: true,
+  });
+};
 onMounted(async () => {
   try {
     loading.value = true
@@ -138,6 +149,8 @@ const addToCart = async () => {
   try {
     isAddingToCart.value = true
     cartStore.addToCart(product.value)
+          showSuccessAlert(product.value) 
+
   } finally {
     isAddingToCart.value = false
   }
