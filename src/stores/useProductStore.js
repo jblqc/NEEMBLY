@@ -79,8 +79,6 @@ export const useProductStore = defineStore("products", {
     },
   },
   getters: {
-    productCount() {
-      return this.filteredProducts.length;
-    },
+  
   },
 });

@@ -20,7 +20,7 @@
 
     <v-row>
       <v-col cols="12" md="8">
-        <v-card class="mb-6">
+        <v-card  border  flat class="mb-6">
           <v-card-title>Shipping Information</v-card-title>
           <v-card-text>
             <v-form v-model="formValid">
@@ -28,19 +28,22 @@
                 v-model="checkoutInfo.name"
                 label="Full Name"
                 :rules="[required]"
-                required
+                required 
+                variant="outlined"
               />
               <v-text-field
                 v-model="checkoutInfo.email"
                 label="Email"
                 :rules="[required, email]"
                 required
+                variant="outlined"
               />
               <v-text-field
                 v-model="checkoutInfo.address"
                 label="Address"
                 :rules="[required]"
                 required
+                variant="outlined"
               />
               <v-row>
                 <v-col cols="6">
@@ -49,6 +52,7 @@
                     label="City"
                     :rules="[required]"
                     required
+                    variant="outlined"
                   />
                 </v-col>
                 <v-col cols="6">
@@ -57,6 +61,7 @@
                     label="ZIP Code"
                     :rules="[required]"
                     required
+                    variant="outlined"
                   />
                 </v-col>
               </v-row>
@@ -64,7 +69,7 @@
           </v-card-text>
         </v-card>
 
-        <v-card>
+        <v-card  border  flat>
           <v-card-title>Payment Method</v-card-title>
           <v-card-text>
             <v-radio-group v-model="paymentMethod">
@@ -86,7 +91,7 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-card>
+        <v-card  border  >
           <v-card-title>Order Summary</v-card-title>
           <v-card-text>
             <v-list>
@@ -105,11 +110,11 @@
                 
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  ${{ item.price.toFixed(2) }} × {{ item.quantity }}
+                  ₱{{ item.price.toFixed(2) }} × {{ item.quantity }}
                 </v-list-item-subtitle>
                 
                 <template v-slot:append>
-                  ${{ (item.price * item.quantity).toFixed(2) }}
+                  ₱{{ (item.price * item.quantity).toFixed(2) }}
                 </template>
               </v-list-item>
               
@@ -118,14 +123,14 @@
               <v-list-item>
                 <v-list-item-title>Subtotal</v-list-item-title>
                 <template v-slot:append>
-                  ${{ cartStore.formattedCartTotal }}
+                  ₱{{ cartStore.formattedCartTotal }}
                 </template>
               </v-list-item>
               
               <v-list-item>
                 <v-list-item-title>Shipping</v-list-item-title>
                 <template v-slot:append>
-                  $5.00
+                  ₱5.00
                 </template>
               </v-list-item>
               
@@ -133,7 +138,7 @@
                 <v-list-item-title class="font-weight-bold">Total</v-list-item-title>
                 <template v-slot:append>
                   <span class="font-weight-bold">
-                    ${{ (cartStore.cartTotal + 5).toFixed(2) }}
+                    ₱{{ (cartStore.cartTotal + 5).toFixed(2) }}
                   </span>
                 </template>
               </v-list-item>
@@ -195,17 +200,17 @@ const placeOrder = async () => {
     
     // Redirect to confirmation page
     router.push('/order-confirmation')
-    cartStore.clearCart()
+    // cartStore.clearCart()
   } catch (error) {
     console.error('Order failed:', error)
   } finally {
     isPlacingOrder.value = false
   }
 }
-watch(() => cartStore.cartItemCount, (count) => {
-  if (count === 0) {
-    router.push('/cart')
-  }
-}, { immediate: true })
+// watch(() => cartStore.cartItemCount, (count) => {
+//   if (count === 0 && router.currentRoute.value.path !== '/order-confirmation') {
+//     router.push('/cart')
+//   }
+// }, { immediate: true })
 
 </script>

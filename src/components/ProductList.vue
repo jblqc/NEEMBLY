@@ -27,7 +27,7 @@
             <div class="mb-6">
               <div class="d-flex justify-space-between mb-2">
                 <span>Price Range</span>
-                <span>${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
+                <span>₱{{ priceRange[0] }} - ₱{{ priceRange[1] }}</span>
               </div>
               <v-range-slider
                 v-model="priceRange"
@@ -38,7 +38,7 @@
                 @update:modelValue="handlePriceRangeChange"
               >
                 <template v-slot:thumb-label="{ modelValue }">
-                  ${{ modelValue }}
+                  ₱{{ modelValue }}
                 </template>
               </v-range-slider>
             </div>
@@ -127,16 +127,16 @@
           </v-alert>
 
           <v-row v-else>
-          <v-col
-  v-for="product in filteredProducts"
-  :key="product.id"
-  cols="12"
-  sm="6"
-  md="4"
-  lg="3"
->
-  <ProductCard :product="product" />
-</v-col>
+            <v-col
+              v-for="product in filteredProducts"
+              :key="product.id"
+              cols="12"
+              sm="6"
+              md="4"
+              lg="3"
+            >
+              <ProductCard :product="product" />
+            </v-col>
           </v-row>
         </template>
       </v-col>

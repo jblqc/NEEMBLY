@@ -5,6 +5,8 @@ import Cart from "@/pages/Cart.vue";
 import ProductList from "@/components/ProductList.vue";
 import ProductDetail from "@/components/ProductDetail.vue";
 import CheckoutPage from "@/pages/CheckoutPage.vue";
+import OrderConfirmationVue from "@/pages/OrderConfirmation.vue";
+import AboutVue from "@/pages/About.vue";
 const routes = [
   {
     path: "/",
@@ -38,6 +40,16 @@ const routes = [
     name: "checkout",
     component: CheckoutPage,
   },
+  {
+    path: "/order-confirmation",
+    name: "order-confirmation",
+    component: OrderConfirmationVue,
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: AboutVue
+  }
 
 ];
 

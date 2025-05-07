@@ -56,7 +56,7 @@
             </div>
 
             <v-card-text class="pa-0">
-              <p class="text-h5 mb-4">${{ product.price.toFixed(2) }}</p>
+              <p class="text-h5 mb-4">₱{{ product.price.toFixed(2) }}</p>
               <p class="mb-6">{{ product.description }}</p>
 
               <div class="d-flex align-center mb-6">
