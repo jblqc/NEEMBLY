@@ -44,7 +44,7 @@
 
       <!-- Admin Note -->
       <v-alert variant="tonal" color="info" class="mb-4">
-        <strong>Interviewer Note:</strong> The admin panel is accessible via the 
+        <strong>Note:</strong> The admin panel is accessible via the 
         <v-icon icon="mdi-shield-account" size="small" /> icon in the header.
       </v-alert>
     </v-card>

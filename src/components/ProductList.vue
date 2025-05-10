@@ -10,8 +10,21 @@
     <v-row>
       <!-- Filters Column -->
       <v-col cols="12" md="3" class="filters-column">
-        <v-card class="mb-4">
+          <v-btn
+      class="d-sm-none mb-2"
+      block
+      variant="outlined"
+      color="primary"
+      @click="showFilters = !showFilters"
+    >
+      {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+    </v-btn>
+        <v-card class="mb-4" v-show="showFilters || isDesktop" >
           <v-card-title class="text-h6">Filters</v-card-title>
+         
+          
+    <v-expand-transition>
+      <v-card class="mb-4">
           <v-card-text>
             <!-- Search Field -->
             <v-text-field
@@ -59,29 +72,41 @@
             </div>
 
             <!-- Rating Filter -->
-            <div class="mb-4">
-              <v-card-subtitle class="pl-0">Customer Rating</v-card-subtitle>
-              <v-radio-group v-model="selectedRating" class="mt-2">
-                <v-radio
-                  v-for="n in 5"
-                  :key="n"
-                  :value="6 - n"
-                  :label="`${6 - n} stars & up`"
-                >
-                  <template v-slot:label>
-                    <v-rating
-                      :model-value="6 - n"
-                      readonly
-                      size="small"
-                      color="amber"
-                      density="compact"
-                      class="mr-2"
-                    />
-                    <span>& up</span>
-                  </template>
-                </v-radio>
-              </v-radio-group>
-            </div>
+         <!-- Rating Filter Section -->
+<div class="mb-4">
+  <v-card-subtitle class="pl-0">Customer Rating</v-card-subtitle>
+  <v-radio-group v-model="selectedRating" class="mt-2">
+    <v-radio
+      v-for="n in 5"
+      :key="n"
+      :value="n"
+    >
+      <template v-slot:label>
+        <div class="d-flex align-center">
+          <v-rating
+            :model-value="n"
+            readonly
+            size="small"
+            color="amber"
+            density="compact"
+            class="mr-2"
+          />
+          <span class="mr-2">
+            {{ n === 5 ? '5+' : n }} star{{ n === 1 ? '' : 's' }}
+          </span>
+          <v-chip
+            v-if="ratingCounts[n] > 0"
+            size="small"
+            color="grey-lighten-2"
+            class="rating-count"
+          >
+            {{ ratingCounts[n] }}
+          </v-chip>
+        </div>
+      </template>
+    </v-radio>
+  </v-radio-group>
+</div>
 
             <!-- Clear Filters Button -->
             <v-btn
@@ -93,12 +118,14 @@
             >
               Clear All Filters
             </v-btn>
-          </v-card-text>
+          </v-card-text></v-card>
+          </v-expand-transition>
         </v-card>
       </v-col>
 
       <!-- Products Column -->
-      <v-col cols="12" md="9">
+      <v-col cols="12" md="9"   v-show="isDesktop || !showFilters"
+>
         <v-row v-if="productStore.loading">
           <v-col v-for="n in 8" :key="n" cols="12" sm="6" md="4" lg="3">
             <v-skeleton-loader type="card" />
@@ -150,6 +177,7 @@ import { useProductStore } from "@/stores/useProductStore";
 import ProductCard from "./ProductCard.vue";
 import { useRoute } from "vue-router";
 import Swal from "sweetalert2";
+import { useDisplay } from 'vuetify';
 
 const productStore = useProductStore();
 const route = useRoute();
@@ -158,8 +186,11 @@ const route = useRoute();
 const priceRange = ref([0, 1000]);
 const selectedCategories = ref([]);
 const selectedRating = ref(null);
-
+const { smAndUp } = useDisplay();
+const isDesktop = computed(() => smAndUp.value);
 // Computed
+const showFilters = ref(false);
+
 const breadcrumbs = computed(() => [
   { title: "Home", disabled: false, to: "/" },
   { title: "Products", disabled: route.path === "/products" },
@@ -197,11 +228,17 @@ const filteredProducts = computed(() => {
     );
   }
 
-  // Apply rating filter
+  // Apply rating filter with precise ranges
   if (selectedRating.value) {
-    products = products.filter((p) => p.rating.rate >= selectedRating.value);
+    products = products.filter((p) => {
+      const rating = p.rating.rate;
+      if (selectedRating.value === 5) {
+        return rating >= 4.5; // 4.5+ counts as 5 stars
+      }
+      return rating >= selectedRating.value - 0.5 && 
+             rating < selectedRating.value + 0.5;
+    });
   }
-
   // Apply sorting
   switch (productStore.sortBy) {
     case "price-low":
@@ -220,7 +257,18 @@ const handlePriceRangeChange = (range) => {
   productStore.minPrice = range[0];
   productStore.maxPrice = range[1];
 };
-
+const ratingCounts = computed(() => {
+  const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  productStore.products.forEach(p => {
+    const rating = p.rating.rate;
+    if (rating >= 4.5) counts[5]++;
+    else if (rating >= 3.5) counts[4]++;
+    else if (rating >= 2.5) counts[3]++;
+    else if (rating >= 1.5) counts[2]++;
+    else if (rating >= 0.5) counts[1]++;
+  });
+  return counts;
+});
 const clearFilters = () => {
   productStore.searchQuery = "";
   priceRange.value = [0, 1000];
